@@ -7,6 +7,7 @@ import { brands, navigation } from '../lib/system';
 
 const github = 'https://github.com/GRUPO-SPECTRA/brand-design-system';
 const themeKey = brandKey => `spectra-brand-design-theme:${brandKey}`;
+const designIdentityExtras = [['concepts', 'Brand Concepts'], ['photography', 'Photography']];
 
 export default function BrandShell({ brandKey, area, pageId, children }) {
   const brand = brands[brandKey];
@@ -25,10 +26,15 @@ export default function BrandShell({ brandKey, area, pageId, children }) {
     }
   }, [brandKey, defaultTheme]);
 
-  const groups = useMemo(() => navigation[area].map(group => ({
-    ...group,
-    pages: group.pages.filter(([, title]) => title.toLowerCase().includes(query.toLowerCase()))
-  })).filter(group => group.pages.length), [area, query]);
+  const groups = useMemo(() => navigation[area].map(group => {
+    const pages = area === 'design' && group.group === 'Identity'
+      ? [...group.pages, ...designIdentityExtras]
+      : group.pages;
+    return {
+      ...group,
+      pages: pages.filter(([, title]) => title.toLowerCase().includes(query.toLowerCase()))
+    };
+  }).filter(group => group.pages.length), [area, query]);
 
   const toggleTheme = () => {
     setTheme(current => {
