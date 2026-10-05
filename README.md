@@ -2,13 +2,15 @@
 
 Sistema vivo de marca e design do Grupo Spectra, reunindo **Spectra Minerais**, **Sür** e **Ana Rios** em uma arquitetura única de documentação.
 
+**Site publicado:** https://grupo-spectra.github.io/brand-design-system/
+
 ## Estrutura
 
 - `app/` — App Router do Next.js e rotas estáticas.
 - `components/` — shell, navegação e páginas visuais do sistema.
 - `lib/system.js` — fonte de verdade de marcas, paletas, conteúdo e navegação.
 - `public/` — ativos públicos.
-- `.github/workflows/deploy-pages.yml` — única workflow de build e publicação no GitHub Pages.
+- `.github/workflows/nextjs.yml` — única workflow de build e publicação no GitHub Pages.
 
 ## Rotas
 
@@ -43,15 +45,13 @@ npm run dev
 npm run build
 ```
 
-O Next.js usa `output: 'export'` e gera o site em `out/`. Em produção o projeto usa o `basePath` `/brand-design-system` para funcionar como GitHub Project Pages.
+O Next.js usa `output: 'export'` e gera o site em `out/`. Em produção o projeto usa o `basePath` `/brand-design-system` para GitHub Project Pages.
 
 ## Publicação
 
-Um push na `main` executa a workflow **Deploy Brand Design System**, que instala dependências, gera o export estático e publica o diretório `out/` no GitHub Pages.
+Todo push na `main` executa **Deploy Next.js to GitHub Pages**. A workflow configura Pages para Next.js, gera o export estático, envia somente `out/` como artefato e publica no ambiente `github-pages`.
 
-URL esperada:
-
-`https://grupo-spectra.github.io/brand-design-system/`
+A página do repositório no GitHub renderiza este README. O site visual é o endereço do GitHub Pages acima.
 
 ## Direção visual
 
