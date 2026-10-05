@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { brands } from '../lib/system';
+import { getBrandFramework } from '../lib/brand-framework';
 
 const Section = ({ kicker, title, children }) => <section className="section"><div className="section-head"><div><span>{kicker}</span><h2>{title}</h2></div></div>{children}</section>;
 const Card = ({ label, title, children, className = '' }) => <article className={`card ${className}`}><small>{label}</small><h3>{title}</h3>{children && <p>{children}</p>}</article>;
@@ -50,7 +51,7 @@ function VisualIdentity({ brand, brandKey }) {
       <div className="grid three">{guides.map(([title, text], i) => <Card key={title} label={`0${i + 1}`} title={title}>{text}</Card>)}</div>
     </Section>
     <Section kicker="02 · Colour system" title="A cor como parte da identidade">
-      <div className="notice" style={{marginBottom:20}}>{spectra ? brand.gradientReason : brand.gradientReason}</div>
+      <div className="notice" style={{marginBottom:20}}>{brand.gradientReason}</div>
       <PaletteSwatches brand={brand} />
     </Section>
     <Section kicker="03 · Meaning" title="O papel de cada cor na construção da marca">
@@ -90,6 +91,16 @@ function GuidancePage({ brand, page, guides }) {
   return <><div className="quote-stage"><small>{brand.concept}</small><blockquote>“{brand.relationship}”</blockquote></div><Section kicker={page.eyebrow} title="Decisões de construção"><div className="grid three">{guides.map(([title,text],i)=><Card key={title} label={`0${i+1}`} title={title}>{text}</Card>)}</div></Section><Section kicker="Validation" title="Pergunta de controle"><div className="notice">Antes de aprovar uma aplicação, pergunte: esta decisão reforça o conceito da marca ou foi adicionada apenas por preferência estética? O sistema deve sempre conseguir explicar o porquê.</div></Section></>;
 }
 
+function FrameworkPage({ brand, framework }) {
+  return <>
+    <div className="quote-stage"><small>{brand.concept}</small><blockquote>“{framework.lead}”</blockquote></div>
+    {framework.sections.map((item, index) => <Section key={`${item.kicker}-${item.title}`} kicker={`${String(index + 1).padStart(2, '0')} · ${item.kicker}`} title={item.title}>
+      <div className={item.items.length === 4 ? 'grid four' : 'grid three'}>{item.items.map(([label, title, text]) => <Card key={`${label}-${title}`} label={label} title={title}>{text}</Card>)}</div>
+    </Section>)}
+    <Section kicker="Validation" title="Como usar esta página"><div className="notice">Esta documentação existe para orientar decisão. Sempre que uma campanha, produto, conteúdo ou experiência sair deste território, registre o motivo e valide se a exceção fortalece a marca ou apenas adiciona ruído.</div></Section>
+  </>;
+}
+
 function GridDemo() { return <><div className="grid-demo">{Array.from({length:12},(_,i)=><span key={i}>{i+1}</span>)}</div><Section kicker="Responsive" title="Breakpoints de referência"><div className="grid three"><Card label="DESKTOP" title="12 colunas">1440px · margem 80px · gutter 24px.</Card><Card label="TABLET" title="8 colunas">768px · margem 32px · gutter 24px.</Card><Card label="MOBILE" title="4 colunas">390px · margem 16px · gutter 16px.</Card></div></Section></>;
 }
 function Spacing(){const values=[4,8,12,16,24,32,40,48,64,80,96];return <Section kicker="Scale" title="Ritmo espacial"><div className="spacing-list">{values.map(v=><div key={v}><code>{v}px</code><span style={{width:`${Math.min(v*3,288)}px`}} /></div>)}</div></Section>}
@@ -106,6 +117,7 @@ function BrandGeneric({brand,page}){
 export default function PageRenderer({brandKey,area,page}){
   const brand=brands[brandKey];
   const guides=brand.pageGuides?.[page.id];
+  const framework=getBrandFramework(brandKey,page.id);
   let content;
   if(page.id==='overview')content=<Overview brandKey={brandKey} brand={brand}/>;
   else if(page.id==='colors')content=<Colors brandKey={brandKey} brand={brand}/>;
@@ -113,6 +125,7 @@ export default function PageRenderer({brandKey,area,page}){
   else if(page.id==='typography')content=<Typography brand={brand}/>;
   else if(page.id==='photography')content=<Photography brand={brand}/>;
   else if(guides)content=<GuidancePage brand={brand} page={page} guides={guides}/>;
+  else if(framework)content=<FrameworkPage brand={brand} framework={framework}/>;
   else if(page.id==='grid')content=<GridDemo/>;
   else if(page.id==='spacing')content=<Spacing/>;
   else if(area==='design')content=<Components id={page.id}/>;
