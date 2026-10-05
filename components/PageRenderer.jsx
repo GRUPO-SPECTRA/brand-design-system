@@ -27,13 +27,43 @@ function Overview({ brandKey, brand }) {
   </>;
 }
 
+function PaletteSwatches({ brand }) {
+  return <div className="swatches">{brand.palette.map(([name, value]) => <div className="swatch" key={name}><div style={{ background: value }} /><strong>{name}</strong><code>{value}</code></div>)}</div>;
+}
+
 function Colors({ brand, brandKey }) {
   const spectra = brandKey === 'spectra';
   return <>
-    <Section kicker="Palette" title="Cores fundamentais"><div className="swatches">{brand.palette.map(([name, value]) => <div className="swatch" key={name}><div style={{ background: value }} /><strong>{name}</strong><code>{value}</code></div>)}</div></Section>
+    <Section kicker="Palette" title="Cores fundamentais"><PaletteSwatches brand={brand} /></Section>
     <Section kicker="Meaning" title="Por que cada cor existe"><div className="grid three">{brand.palette.map(([name, value, role, reason, usage]) => <Card key={name} label={`${value} · ${role}`} title={name}>{reason} Uso principal: {usage}</Card>)}</div></Section>
     {spectra ? <Section kicker="Refraction" title="Gradientes oficiais"><div className="notice" style={{marginBottom:14}}>{brand.gradientReason}</div><div className="grid three">{brand.gradients.map(([name, value]) => <div className="gradient" style={{ background: value }} key={name}><span>{name}</span></div>)}</div></Section> : <Section kicker="Solid colour" title="Por que não usamos gradientes"><div className="notice">{brand.gradientReason}</div></Section>}
     <Section kicker="Usage" title="Regra de aplicação"><div className="grid two"><Card label="DO" title="Use cor com função">Cada cor deve ter papel claro: base, contraste, assinatura, informação ou expressão.</Card><Card label="DON'T" title="Não use a paleta como catálogo">Consistência vem de hierarquia e repetição. Nem toda peça precisa mostrar todas as cores disponíveis.</Card></div></Section>
+  </>;
+}
+
+function VisualIdentity({ brand, brandKey }) {
+  const guides = brand.pageGuides?.['visual-identity'] || [];
+  const spectra = brandKey === 'spectra';
+  return <>
+    <div className="quote-stage"><small>{brand.concept}</small><blockquote>“{brand.relationship}”</blockquote></div>
+    <Section kicker="01 · Construction" title="Como a identidade visual nasce do conceito">
+      <div className="grid three">{guides.map(([title, text], i) => <Card key={title} label={`0${i + 1}`} title={title}>{text}</Card>)}</div>
+    </Section>
+    <Section kicker="02 · Colour system" title="A cor como parte da identidade">
+      <div className="notice" style={{marginBottom:20}}>{spectra ? brand.gradientReason : brand.gradientReason}</div>
+      <PaletteSwatches brand={brand} />
+    </Section>
+    <Section kicker="03 · Meaning" title="O papel de cada cor na construção da marca">
+      <div className="grid three">{brand.palette.map(([name, value, role, reason, usage]) => <Card key={name} label={`${value} · ${role}`} title={name}>{reason} Uso principal: {usage}</Card>)}</div>
+    </Section>
+    {spectra && <Section kicker="04 · Refraction" title="Quando o espectro aparece"><div className="grid three">{brand.gradients.map(([name, value]) => <div className="gradient" style={{ background: value }} key={name}><span>{name}</span></div>)}</div></Section>}
+    <Section kicker={spectra ? '05 · Relationship' : '04 · Relationship'} title="Cor, tipografia, imagem e matéria precisam falar a mesma língua">
+      <div className="grid three">
+        <Card label="COLOUR" title="Cor">A paleta define atmosfera, contraste e assinatura. Ela nunca deve ser aplicada separada do conceito central.</Card>
+        <Card label="TYPE" title="Tipografia">A tipografia controla o tom da marca e equilibra a intensidade visual da cor, fotografia e composição.</Card>
+        <Card label="IMAGE" title="Imagem">Fotografia e materialidade mostram no mundo físico aquilo que a paleta e a linguagem gráfica sugerem.</Card>
+      </div>
+    </Section>
   </>;
 }
 
@@ -79,6 +109,7 @@ export default function PageRenderer({brandKey,area,page}){
   let content;
   if(page.id==='overview')content=<Overview brandKey={brandKey} brand={brand}/>;
   else if(page.id==='colors')content=<Colors brandKey={brandKey} brand={brand}/>;
+  else if(page.id==='visual-identity')content=<VisualIdentity brandKey={brandKey} brand={brand}/>;
   else if(page.id==='typography')content=<Typography brand={brand}/>;
   else if(page.id==='photography')content=<Photography brand={brand}/>;
   else if(guides)content=<GuidancePage brand={brand} page={page} guides={guides}/>;
