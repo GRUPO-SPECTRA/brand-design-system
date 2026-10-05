@@ -1,0 +1,108 @@
+/* Brand-specific refinements: Spectra owns gradients; Sür and Ana Rios stay solid. */
+.system.brand-sur {
+  --brand-gradient: #74777c;
+  --brand-line: #74777c;
+}
+
+.system.brand-ana-rios {
+  --brand-gradient: #4b1828;
+  --brand-line: #4b1828;
+}
+
+.portal-card.brand-sur i,
+.tile-sur i {
+  background: #c7c9cc;
+}
+
+.portal-card.brand-ana-rios i,
+.tile-ana-rios i {
+  background: #4b1828;
+}
+
+.system.brand-sur .hero-visual::before,
+.system.brand-ana-rios .hero-visual::before,
+.system.brand-sur .photo-stage::before,
+.system.brand-ana-rios .photo-stage::before {
+  display: none;
+}
+
+.system.brand-sur .photo-stage,
+.system.brand-ana-rios .photo-stage {
+  background: var(--surface);
+}
+
+.system.brand-sur .ecosystem-mark,
+.system.brand-ana-rios .ecosystem-mark {
+  background: var(--accent);
+}
+
+.type-table {
+  width: 100%;
+  border-top: 1px solid var(--border);
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  min-height: 94px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.type-row.type-head {
+  min-height: 56px;
+  color: var(--muted);
+}
+
+.type-row.type-head > span,
+.type-row.type-head > strong {
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.type-row.type-head > strong:first-of-type {
+  font-family: var(--font-display);
+}
+
+.type-row.type-head > strong:last-of-type {
+  font-family: var(--font-ui);
+}
+
+.type-row code {
+  color: var(--muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.type-sample {
+  display: block;
+  font-size: var(--sample-size);
+  line-height: 1;
+  letter-spacing: -.035em;
+  overflow-wrap: anywhere;
+}
+
+.type-sample.display-font {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.type-sample.ui-font {
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .type-row {
+    grid-template-columns: 84px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .type-sample {
+    font-size: clamp(16px, calc(var(--sample-size) * .72), 42px);
+  }
+}
