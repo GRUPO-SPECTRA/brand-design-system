@@ -1,4 +1,4 @@
-/* Brand-specific refinements: Spectra owns gradients; Sür and Ana Rios stay solid. */
+/* Spectra owns the gradient language. Sür and Ana Rios stay chromatically solid. */
 .system.brand-sur {
   --brand-gradient: #74777c;
   --brand-line: #74777c;
@@ -103,6 +103,6 @@
   }
 
   .type-sample {
-    font-size: clamp(16px, calc(var(--sample-size) * .72), 42px);
+    font-size: min(var(--sample-size), 42px);
   }
 }

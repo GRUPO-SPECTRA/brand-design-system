@@ -1,4 +1,5 @@
 import './globals.css';
+import './brand-overrides.css';
 
 export const metadata = {
   title: 'SPECTRA · Brand & Design System',

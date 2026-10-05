@@ -23,18 +23,35 @@ function Overview({ brandKey, brand }) {
   </>;
 }
 
-function Colors({ brand }) {
+function Colors({ brand, brandKey }) {
+  const spectra = brandKey === 'spectra';
   return <>
     <Section kicker="Palette" title="Cores fundamentais"><div className="swatches">{brand.palette.map(([name, value]) => <div className="swatch" key={name}><div style={{ background: value }} /><strong>{name}</strong><code>{value}</code></div>)}</div></Section>
-    <Section kicker="Refraction" title="Gradientes oficiais"><div className="grid three">{brand.gradients.map(([name, value]) => <div className="gradient" style={{ background: value }} key={name}><span>{name}</span></div>)}</div></Section>
+    {spectra ? <Section kicker="Refraction" title="Gradientes oficiais"><div className="grid three">{brand.gradients.map(([name, value]) => <div className="gradient" style={{ background: value }} key={name}><span>{name}</span></div>)}</div></Section> : <Section kicker="Solid colour" title="Superfícies sem gradiente"><div className="notice">{brand.name} trabalha com cores sólidas. Gradientes não fazem parte da linguagem principal da marca; contraste, materialidade e composição devem criar profundidade sem depender de transições cromáticas.</div></Section>}
     <Section kicker="Usage" title="Regra de aplicação"><div className="grid two"><Card label="DO" title="Use cor com intenção">A cor deve construir hierarquia, fenômeno, materialidade ou significado.</Card><Card label="DON'T" title="Evite ruído cromático">Não aplique toda a paleta em todos os componentes ou superfícies.</Card></div></Section>
   </>;
 }
 
 function Typography({ brand }) {
+  const scale = [
+    ['Display', 72], ['H1', 48], ['H2', 32], ['H3', 24], ['Body', 16], ['Caption', 12]
+  ];
   return <>
     <div className="type-hero"><small>DISPLAY · {brand.type.display}</small><strong style={{ fontFamily: `var(--font-display)` }}>{brand.type.sample}</strong></div>
-    <Section kicker="Hierarchy" title="Escala tipográfica"><div className="type-list"><div><code>Display / 72</code><b className="t-display">Aa</b></div><div><code>H1 / 48</code><b className="t-h1">Aa</b></div><div><code>H2 / 32</code><b className="t-h2">Aa</b></div><div><code>Body / 16</code><b className="t-body">Aa</b></div></div></Section>
+    <Section kicker="Hierarchy" title="Escala tipográfica">
+      <div className="type-table" role="table" aria-label={`Escala tipográfica de ${brand.name}`}>
+        <div className="type-row type-head" role="row">
+          <span role="columnheader">Escala</span>
+          <strong role="columnheader">{brand.type.display}</strong>
+          <strong role="columnheader">{brand.type.ui}</strong>
+        </div>
+        {scale.map(([label, size]) => <div className="type-row" role="row" key={label} style={{ '--sample-size': `${size}px` }}>
+          <code role="cell">{label} / {size}</code>
+          <span role="cell" className="type-sample display-font">Aa</span>
+          <span role="cell" className="type-sample ui-font">Aa</span>
+        </div>)}
+      </div>
+    </Section>
     <Section kicker="Pairing" title="Display + interface"><div className="grid two"><Card label="DISPLAY" title={brand.type.display}>Títulos editoriais, frases de marca e comunicação de alto impacto.</Card><Card label="UI / BODY" title={brand.type.ui}>Interface, navegação, textos longos, dados e conteúdos utilitários.</Card></div></Section>
   </>;
 }
@@ -81,7 +98,7 @@ export default function PageRenderer({ brandKey, area, page }) {
   const brand = brands[brandKey];
   let content;
   if (page.id === 'overview') content = <Overview brandKey={brandKey} brand={brand} />;
-  else if (page.id === 'colors') content = <Colors brand={brand} />;
+  else if (page.id === 'colors') content = <Colors brandKey={brandKey} brand={brand} />;
   else if (page.id === 'typography') content = <Typography brand={brand} />;
   else if (page.id === 'photography') content = <Photography brand={brand} />;
   else if (page.id === 'grid') content = <GridDemo />;

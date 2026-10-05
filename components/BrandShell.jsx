@@ -1,23 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { brands, navigation } from '../lib/system';
 
 const github = 'https://github.com/GRUPO-SPECTRA/brand-design-system';
+const themeKey = brandKey => `spectra-brand-design-theme:${brandKey}`;
 
 export default function BrandShell({ brandKey, area, pageId, children }) {
   const brand = brands[brandKey];
   const pathname = usePathname();
-  const [theme, setTheme] = useState(brand.theme);
+  const defaultTheme = brandKey === 'spectra' ? 'light' : brand.theme;
+  const [theme, setTheme] = useState(defaultTheme);
   const [query, setQuery] = useState('');
   const [drawer, setDrawer] = useState(false);
+
+  useLayoutEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(themeKey(brandKey));
+      setTheme(saved === 'dark' || saved === 'light' ? saved : defaultTheme);
+    } catch {
+      setTheme(defaultTheme);
+    }
+  }, [brandKey, defaultTheme]);
 
   const groups = useMemo(() => navigation[area].map(group => ({
     ...group,
     pages: group.pages.filter(([, title]) => title.toLowerCase().includes(query.toLowerCase()))
   })).filter(group => group.pages.length), [area, query]);
+
+  const toggleTheme = () => {
+    setTheme(current => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      try { window.localStorage.setItem(themeKey(brandKey), next); } catch {}
+      return next;
+    });
+  };
 
   return (
     <div className={`system brand-${brandKey}`} data-theme={theme}>
@@ -62,7 +81,7 @@ export default function BrandShell({ brandKey, area, pageId, children }) {
           <span className="topbar-space" />
           <span className="brand-context">{brand.concept}</span>
           <a className="icon-button" href={github} target="_blank" rel="noreferrer" aria-label="GitHub">↗</a>
-          <button className="icon-button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Alternar tema">◐</button>
+          <button className="icon-button" onClick={toggleTheme} aria-label="Alternar tema">◐</button>
         </header>
         <main className="app">{children}</main>
       </section>
